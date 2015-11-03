@@ -1,0 +1,27 @@
+﻿General:
+- Wider Exit lv. 20			?_	[]
+- More Blocks				?_	[]
+- More Powerups				?_	[]
+- More Tiles				?_	[]
+- Sound Effects					[]
+- Alternate Graphics		?_	[]
+- Game Background			?_	[]
+- Generic Controller			[]
+- Master Grid					[]
+- Achievements					[]
+- More Levels					[]
+- Level Editior				?	[]
+
+
+Sound Effects:
+- Slow Down			[x]
+- Speed Up			[x]
+- Get Laser			[]
+- Button Press		[]
+- Laser Fire		[]
+- Crash				[]
+- Get Cash			[]
+- Button Press		[]
+- Destroy Block		[]
+
+2/1/2011	XXXXXX

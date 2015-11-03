@@ -1,0 +1,18 @@
+﻿1 - Level Select
+Level Categories:
+1-10 - Tutorial Levels
+11-50 - Normal Levels
+
+
+Initialize Mode
+Enter Loop
+Normal Loop
+Exit Loop
+
+Phases:
+0 - Init
+1 - Enter
+2 - 
+
+Loops:
+Normal -1 to stay, +# to leave

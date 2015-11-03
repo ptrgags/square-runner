@@ -1,0 +1,19 @@
+levels: xml.firstChild (attributes: xml.firstChild.attributes.ATTRIBUTENAME)
+(Array levels)level: xml.firstChild.childNodes[0-19]
+Line text: *.linenode.nodeValue
+
+
+for i in 0...numOfLevels:
+levels[i].title = xml.firstChild.childNodes[i].childNodes[0].nodeValue;
+levels[i].desc = xml.firstChild.childNodes[i].childNodes[1].nodeValue;
+levels[i].text = xml.firstChild.childNodes[i].childNodes[2].nodeValue;
+for j in 0...xml.firstChild.childNodes[i].childNodes[3].childNodes.length:
+levels[i].line[j] = xml.firstChild.childNodes[i].childNodes[3].childNodes[j]:
+
+
+class SRFLevel:
+
+public var title:	String;
+public var desc:	String;
+public var text:	String;
+public var line:	Array<String>;

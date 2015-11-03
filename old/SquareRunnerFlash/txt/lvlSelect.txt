@@ -1,0 +1,17 @@
+﻿//Up button clicked: 
+//{
+if (selectIndex != 0)
+	selectIndex -= 1;
+	
+if (selectRelIndex != 0)
+	selectRelIndex -= 1;
+else
+if (listStart != 0)
+	listStart -= 1;
+//}
+
+//Down button clicked:
+//{
+//}
+
+//Button 

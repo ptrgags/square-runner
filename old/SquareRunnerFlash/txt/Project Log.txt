@@ -1,0 +1,43 @@
+﻿+===============================================================================+
+|	Square Runner Flash 	Version 1.1		Project ID: SRF				Log#01	|
++===============================================================================+
+|	Start Date:		7/20/2010													|
+|	End Date:		-/--/----													|
+|																				|
+|	Builds:																		|
+|	- SRF 1.0.0.0	9/3/2010													|
+|	- SRF 1.0.0.1	10/24/2010													|
+|	- SRF 1.0.1.0	11/7/2010													|
+|																				|
+|	Library Additions:															|
+|	- class AnimatedImage														|
+|	- class	ObjBase 															|
+|	- class OutputBox 															|
+|	- class InputField															|
+|	- class StepTimer 															|
+|	- class InfoPanel															|
+|	- class AudioObj															|
+|	- Basis for generic controller object										|
+|	- Basis for keyboard and mouse controls										|
+|	- Basis for object movement													|
+|																				|
+|	Project Additions:															|
+|	- Blocks				1.0.0.0												|
+|	- Powerups				1.0.0.0												|
+|	- Tiles					1.0.0.0												|
+|	- Levels				1.0.0.0												|
+|	- Sound					1.0.0.1												|
+|	- Info Panels			1.0.1.0												|
+|	- Final Graphics		1.0.1.0												|
+|	- Scoring				1.0.1.0												|
+|																				|
+|	Next Version:																|  WORK ON THIS STUFF
+|	- Add sound effects															|
+|	- Add achievments															|
+|	- Replace game controller with a generic controller							|
+|	- Add master grid															|
+|	- Fix block formation tearing												|
+|																				|
++===============================================================================+
+|	SRF Copyright (c) 2010 BlynkDev Games										|
++===============================================================================+

@@ -1,0 +1,399 @@
+﻿import blynkdev.Button;
+import blynkdev.Controller;
+import blynkdev.OutputBox;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.PixelSnapping;
+import flash.display.Shape;
+import flash.Lib;
+import Graphics;
+
+//vars[0]	background		Bitmap
+//vars[1]	txt				OutputBox
+//vars[2]	highlight		Shape
+public static function init1(ctrl:Controller):Void
+{
+	var grid = ctrl.grid;
+	var vars = ctrl.vars;
+	var const = new Const();
+	
+//Load Level Data or create new data
+	ctrl.global.lvlUnlocked = new Array<Bool>();
+	for (i in 0...const.NUM_LEVELS)
+	//	ctrl.global.lvlUnlocked[i] = false;	
+	//ctrl.global.lvlUnlocked[0] = true;
+	
+//Create Background
+	vars[0] = new Bitmap(new BacMain());
+	Lib.current.addChild(ctrl.vars[0]);
+	
+//Create Level Buttons
+	grid.addType();
+	for (i in 0...10)
+		ctrl.grid.addObject(0, new Button(/*x*/,/*y+16*i*/,/*img*/);
+
+//Create Text Box
+	vars[1] = new OutputBox();
+	vars[1].setDimensions(/*x*/,/*y*/,/*width*/,/*height*/);
+
+//Create Up/Down Buttons
+	grid.addType();
+	grid.addObject(1, new Button(/*x*/,/*y*/,/*img*/));
+	grid.addObject(1, new Button(/*x*/,/*y*/,/*img*/));
+
+//Create Infinity Mode, Play, and Back Buttons
+	grid.addType();
+	grid.addObject(2, new Button(/*x*/,/*y*/,/*img*/));
+	grid.addObject(2, new Button(/*x*/,/*y*/,/*img*/, "Play"));
+	grid.addObject(2, new Button(/*x*/,/*y*/,/*img*/, "Back"));
+
+//Create Highlight
+	vars[2] = new Shape();
+	vars[2].graphics.beginFill(/*color*/,/*alpha*/);
+	vars[2].graphics.drawRect(/*x*/,/*y*/,/*width*/,/*height*/);
+	vars[2].graphics.endFill();
+}
+
+public static function step1(ctrl:Controller):Void
+{
+//Step Events
+	ctrl.grid.stepEvent();
+
+//Adjust Level Buttons & Up/Down Buttons
+	/*for (i in 0...10)
+	{
+		if (i > 
+			ctrl.grid.getObject(0, i).enabled = false;
+		else
+			ctrl.grid.getObject(0, i).enabled = true;
+	}*/
+
+//Update Text Box
+
+	Lib.current.removeChild(ctrl.vars[2]);
+	Lib.current.addChild(ctrl.vars[2]);
+}
+
+public static function change1(ctrl:Controller):Int
+{
+	if (ctrl.grid.getObject(2, 2).isClicked())
+		return 0;
+
+//If Play is clicked, save selection and go to 3
+	if (ctrl.grid.getObject(2, 1).isClicked())
+	{
+		//Save Level Number
+		return 3;
+	}
+
+	if (ctrl.grid.getObject(2, 0).isClicked())
+		return 7;
+}
+
+public static function end1(ctrl:Controller):Void
+{
+	Lib.current.removeChild(ctrl.vars[0]);
+	ctrl.vars[0] = null;
+
+	ctrl.grid.delete();
+
+	ctrl.vars[1].delete();
+	ctrl.vars[1] = null;
+
+	Lib.current.removeChild(ctrl.vars[2]);
+	ctrl.vars[2] = null;
+}
+//------------------------------------------------------
+
+//vars[0]	background		Bitmap
+//vars[1]	info			
+//vars[2]	backButton		Button
+public static function init2(ctrl:Controller):Void
+{
+//Create Background
+	ctrl.vars[0] = new Bitmap(/*bitmapData*/);
+	Lib.current.addChild(ctrl.vars[0]);
+	
+//Create Info Panel
+
+//Create Back Button
+	ctrl.vars[2] = new Button(/*x*/,/*y*/,/*img*/, "Back");
+}
+
+public static function step2(ctrl:Controller):Void
+{
+//Step Events
+	ctrl.vars[2].stepEvent();
+}
+
+public static function change2(ctrl:Controller):Int
+{
+	if (ctrl.vars[2].isClicked())
+		return 0;
+		
+	return -1;
+}
+
+public static function end2(ctrl:Controller):Void
+{
+//Delete Background
+	Lib.current.removeChild(ctrl.vars[0]);
+	ctrl.vars[0] = null;
+
+//Delete Info Panel
+
+	ctrl.vars[2].delete();
+	ctrl.vars[2] = null;
+}
+//--------------------------------------------------------
+
+//vars[0]	background		Bitmap
+//vars[1]	pauseButton		Button
+//vars[2]	viewBitmap		Bitmap
+//vars[3]	backButton		Button
+//vars[4]	
+//vars[5]	pauseImg		Bitmap
+//vars[6]	pauseBg			Shape
+//vars[7]	pauseTxt		OutputBox
+//vars[8]	status			OutputBox
+//vars[9]	nextButton		Button
+public static function init3(ctrl:Controller):Void
+{
+	var vars = ctrl.vars;
+	
+//Create Background
+	vars[0] = new Bitmap(/*bitmapData*/);
+	Lib.current.addChild(vars[0]);
+
+//Create Pause Button
+	vars[1] = new Button(/*x*/,/*y*/,/*img*/, "Pause");
+
+//Create View Bitmap
+	vars[2] = new Bitmap(new BitmapData(320,/*height*/));
+	Lib.current.addChild(ctrl.vars[2]);
+
+//Create Back Button
+	vars[3] = new Button(/*x*/,/*y*/,/*img*/, "Back");
+
+//Create Game Controller
+
+//Create and Hide Pause Bitmap, Shape, & TextBox
+	vars[5] = new Bitmap(/*bitmapData*/);
+	
+	vars[6] = new Shape();
+	vars[6].graphics.beginFill(0x000000, .25);
+	vars[6].graphics.drawRect(0, 0, 640, 480);
+	vars[6].graphics.endFill();
+	
+	vars[7] = new OutputBox();
+
+//Create Status Text Box
+	vars[8] = new OutputBox();
+
+//Create Next Level Button
+	vars[9] = new Button(/*x*/,/*y*/,/*img*/, "Next Level");
+}
+
+public static function step3(ctrl:Controller):Void
+{
+//Step Events
+	ctrl.vars[1].stepEvent();
+	ctrl.vars[3].stepEvent();
+	ctrl.vars[9].stepEvent();
+
+//If Pause is clicked or P is pressed, Pause Mode
+
+//Repaint View
+
+//Update Status Box
+}
+
+public static function pause3(ctrl:Controller):Void
+{
+//If P is pressed, resume game
+}
+
+public static function change3(ctrl:Controller):Int
+{
+//If Back Button is clicked, go to 0
+
+//If Game is complete, save data and go to 1
+
+return -1;
+}
+
+public static function end3(ctrl:Controller):Void
+{
+//Delete Background
+	Lib.current.removeChild(ctrl.vars.background);
+	ctrl.vars.background = null;
+
+//Delete Pause Button
+
+//Delete View Bitmap
+
+//Delete Back Button
+	ctrl.vars.back.delete();
+	ctrl.vars.back = null;
+
+//Delete Game Controller
+
+//Delete Pause Bitmap, Shape & Text Box
+
+//Delete Status Box
+}
+//---------------------------------------------------
+
+public static function init4(ctrl:Controller):Void
+{
+//Create Background
+
+//Create Text Box
+
+//Create Back Button
+}
+
+public static function step4(ctrl:Controller):Void
+{
+//Step Events
+
+//Move Text up the screen
+}
+
+public static function change4(ctrl:Controller):Int
+{
+//If Back is clicked, go to 0
+
+return -1;
+}
+
+public static function end4(ctrl:Controller):Void
+{
+//Delete Background
+
+//Delete Text Box
+
+//Delete Back Button
+}
+//-----------------------------------------------
+
+//vars[0]	background		Bitmap
+//vars[1]	icons
+//vars[2]	upButton		Button
+//vars[3]	downButton		Button
+//vars[4]	backButton		Button
+//vars[5]	text			OutputBox
+//vars[6]	preview
+//vars[7]	highlight
+public static function init5(ctrl:Controller):Void
+{
+//Create Background
+	ctrl.vars[0] = new Bitmap(/*bitmapData*/);
+	Lib.current.addChild(ctrl.vars[0]);
+//Create Icons
+
+//Create Up/Down Buttons
+	ctrl.vars[2] = new Button(/*x*/,/*y*/,/*img*/);
+	ctrl.vars[3] = new Button(/*x*/,/*y*/,/*img*/);
+
+//Create Back Button
+	ctrl.vars[4] = new Button(/*x*/,/*y*/,/*img*/, "Back");
+
+//Create Text Boxes
+	ctrl.vars[5] = new OutputBox();
+
+//Create Preview Image
+
+//Create Highlight 
+}
+
+public static function step5(ctrl:Controller):Void
+{
+//Step Events
+
+//Update Icon Positions to Up/Down Buttons
+
+//Update Highlight Position
+
+//Update Description Text Box
+
+//Update Requirements Text Box
+
+//Update Image Preview
+}
+
+public static function change5(ctrl:Controller):Int
+{
+//If Back is clicked, go to 0
+
+return -1
+}
+
+public static function end5(ctrl:Controller):Void
+{
+//Delete Background
+
+//Delete Icons
+
+//Delete Up/Down Buttons
+
+//Delete Back Button
+
+//Delete Text Boxes
+
+//Delete Image Preview
+
+//Delete Highlight
+}
+//--------------------------------------------
+
+//vars[0]	background		Bitmap
+//vars[1]	backButton		Button
+//vars[2]
+//vars[3]	viewBitmap		Bitmap
+public static function init7(ctrl:Controller):Void
+{
+//Create Background
+	ctrl.vars[0] = new Bitmap(/*bitmapData*/);
+	Lib.current.addChild(ctrl.vars[0]);
+
+//Create Back Button
+	ctrl.vars[1] = new Button(/*x*/,/*y*/,/*img*/, "Back");
+
+//Create Game Controller
+	//ctrl.vars[2] = new ???
+
+//Create View Bitmap
+	ctrl.vars[3] = new Bitmap(new BitmapData(320,/*height*/));
+	Lib.current.addChild(ctrl.vars[3]);
+}
+
+public static function step7(ctrl:Controller):Void
+{
+//Step Events
+	ctrl.vars[1].stepEvent();
+
+//Repaint View Bitmap
+}
+
+public static function change7(ctrl:Controller):Int
+{
+	if (ctrl.vars[1].isClicked())
+		return 0;
+//If Game is complete, save and go to 8
+	return -1;
+}
+
+public static function end7(ctrl:Controller):Void
+{
+	Lib.current.removeChild(ctrl.vars[0]);
+	ctrl.vars[0] = null;
+
+	ctrl.vars[1].delete();
+	ctrl.vars[1] = null;
+
+	Lib.current.removeChild(ctrl.vars[3]);
+	ctrl.vars[3] = null;
+}
+
+//XXXXXXXXX

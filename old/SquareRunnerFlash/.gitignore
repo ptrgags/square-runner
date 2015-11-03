@@ -1,0 +1,9 @@
+#Ignore generated files
+obj/*
+bin/*swf
+
+#Ignore image database files
+Thumbs.db
+
+#Ignore really old files
+src/old/*

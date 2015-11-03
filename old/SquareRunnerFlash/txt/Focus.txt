@@ -1,0 +1,1 @@
+Lib.current.stage.focus = Lib.current.stage;

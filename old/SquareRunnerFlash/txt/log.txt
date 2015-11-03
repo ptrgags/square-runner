@@ -1,0 +1,30 @@
+SRF Activity Log:
+
+- Adjust Textbox Postions Mode 3		[x]		6/18/2011
+  - Player Textboxes					[x]		6/18/2011
+  - Level Textboxes						[x]		6/18/2011
+- Reduce Lag							[x]		6/18/2011
+  - Const Object for Mode 3				[x]		6/18/2011
+  - Fix create Object function			[x]		6/18/2011  
+
+- Remake Mode 2							[x]		6/21/2011
+  - Init								[x]		6/21/2011
+- Fix Pausing in Mode 3					[x]		6/21/2011
+
+- Fix Mode 2 Display Issues				[x]		6/28/2011
+	- Broken Button						[x]		6/28/2011
+	- No Images							[x]		6/28/2011
+- Ajust Info Panel Dimensions			[x]		6/28/2011
+
+- Info Mode Background					[x]		7/26/2011
+  - Main Menu Background				[x]		7/26/2011
+  - Fix Text Color						[x]		7/26/2011
+- Fix Moving Block Wrapping 			[x]		7/26/2011
+
+- Fix View								[x]		7/28/2011
+  - Move up Player						[x]		6/18/2011
+  - Move up Destroy Point for blocks	[x]		6/18/2011
+  - Add destroy Point for bullets		[x]		7/28/2011
+
+
+

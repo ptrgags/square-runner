@@ -1,0 +1,27 @@
+New Blocks:
+J = Iron Block (Stops Invincibility)
+K = Enemy
+L = Armed enemy
+M = Turret
+
+New Powerups
+I = Reverse Movement (1 time use)
+N = Portal (Wrap around)
+O = Shotgun (3 bullet spread)
+P = Sniper (Game stops, Choose a line to shoot)
+Q = Dual Shots
+R = Tesla Coil (Clears screen)
+S = Gun
+
+New Tiles
+I = Reverse Movement
+
+BOSS LEVELS:
+Line -1 = Emitters
+Lines 0-5 = Boss Objects
+
+Boss Objects:
+Body (x,y,health, core)
+Cannon (x,y,health,degree,timer, core)
+Core (x,y, health, number)
+BlockEmitter (x,y,health,timer, type, core)
