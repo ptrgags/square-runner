@@ -1,0 +1,17 @@
+onCreate:
+	Set panel start index to 0
+	Set select index to 0
+	Set select panel index to 0
+	Set background
+	For i in 0...10
+		Create new button at position (32, 32 * i + 32)
+	Create new output box at position (352, 32) with dimensions (256, 320)
+	Create up button at position (288, 32)
+	Create down button at position (288, 320)
+	Create disabled "Infinity Mode" Button at position (208, 368)
+	Create "Play" button at position (368, 368)
+	Create "Back" button at position (48, 368)
+onFrame:
+	
+onDraw:
+	draw rectangle at position (32, 23) width dimensions (256, 32)

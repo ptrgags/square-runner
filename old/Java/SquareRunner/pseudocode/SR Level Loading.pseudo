@@ -1,0 +1,104 @@
+CHANGE CLASS Menu
+	CHANGE METHOD createButtons
+		CHANGE LINE "setNewProgram(new ClassicMode());"
+			CALL setNextProgram WITH (NEW LevelSelect)
+
+CHANGE CLASS SquareRunnerLevel
+	DEFINE Ommelet levelData AND GETTER/SETTER
+	DEFINE String description AND GETTER/SETTER
+	DEFINE List<String> levelText AND GETTER/SETTER
+	
+CHANGE CLASS ClassicMode
+	REMOVE CONSTANT KEY_HIGH_SCORE
+	DEFINE SquareRunnerLevel level
+	CHANGE METHOD onCreate
+		CHANGE LINE "int highscore"
+			SET level TO (CALL getCurrentLevel ON Global)
+			INIT INT highScore AS (CALL getHighscore ON level)
+		CHANGE LINE "setScore(..."
+			CALL setScore WITH (NEW Score WITH highScore)
+		CHANGE LINE "ommelet = getResources()..."
+			SET ommelet AS (CALL getLevelData ON level) 
+		REMOVE LINE "ommelet = ommelet..."
+	CHANGE METHOD onFrame
+		CHANGE LINE "setNextProgram(new Menu());"
+			CALL setNextProgram WITH (NEW LevelSelect)
+	CHANGE METHOD onDestroy
+		CALL setHighscore ON level WITH (CALL getHighValue ON (CALL getScore))
+		CALL saveProgress ON Global
+		IF (CALL getState) EQUALS GameState.COMPLETE
+			CALL advanceLevel ON Global
+
+CHANGE CLASS Global
+	DEFINE PRIVATE CONSTANT String KEY_UNLOCKED AS "classicUnlocked"
+	DEFINE PRIVATE CONSTANT String KEY_HIGHSCORE AS "classicHighscore"
+	CHANGE METHOD loadLevels
+		FOR i IN 0 TO 20
+			INIT SquareRunnerLevel level AS (NEW SquareRunnerLevel)
+			INIT String paddedIndex AS (CALL pad WITH i)
+			INIT Ommelet ommelet AS (CALL loadOmmelet ON (CALL getResources) WITH "omml/", "level" + paddedIndex)
+			SET ommelet TO (CALL getFirstChild ON ommelet)
+			CALL setTitle ON level WITH (CALL getPropertyValue ON ommelet WITH "title")
+			CALL setLevelText ON level WITH (CALL getText ON ommelet)
+			CALL setDescription ON level WITH (CALL remove ON (CALL getLevelText ON level) WITH 0)
+			CALL setLevelData ON level WITH (CALL getFirstChild ON ommelet)
+			CALL setUnlocked ON level WITH (CALL getBoolean ON saveData WITH KEY_UNLOCKED + paddedIndex, false)
+			CALL setHighscore ON level WITH (CALL getInt ON saveData WITH KEY_HIGHSCORE + paddedIndex, 0)
+			CALL add ON levels WITH level
+		CALL setUnlocked ON (CALL get ON levels WITH 0) WITH true
+	METHOD pad PARAMS number
+		IF number < 10
+			RETURN "0" + number
+		ELSE
+			RETURN (CALL toString on Integer WITH number)
+	REMOVE METHOD getCurrentLevel
+	METHOD getCurrentLevel
+		RETURN (CALL getLevel WITH currentLevel)
+	METHOD saveProgress
+		FOR i IN 0 TO 20
+			INIT paddedIndex AS (CALL pad WITH i)
+			CALL putInt ON saveData WITH KEY_HIGHSCORE + paddedIndex, (CALL getHighscore ON (CALL get ON levels WITH i))
+			CALL putBoolean ON saveData WITH KEY_UNLOCKED + paddedIndex, (CALL isUnlocked ON (CALL get ON levels WITH i))
+	METHOD advanceLevel
+		INCREMENT currentLevel
+		IF currrentLevel IS LESS THAN (CALL size ON levels)
+			CALL setUnlocked ON (CALL get ON levels WITH currentLevel) WITH true
+			
+CHANGE CLASS LevelSelect
+	DEFINE OutputBox textBox
+	CHANGE METHOD onCreate
+		APPEND LINES
+			SET textBox TO (NEW OutputBox WITH 352, 32)
+			CALL setTextColor ON textBox WITH Color.WHITE
+	CHANGE METHOD onFrame
+		APPEND LINE
+			CALL updateTextBox
+	CHANGE METHOD onDraw
+		APPEND LINE
+			CALL drawUnit WITH textBox, painter
+	METHOD updateTextBox
+		INIT SquareRunnerLevel level AS (CALL getLevel ON Global WITH selectIndex)
+		CALL clear ON textBox
+		CALL addLine ON textBox WITH (CALL getTitle ON level)
+		CALL addLine ON textBox WITH ""
+		FOR i IN (CALL getLevelText ON level)
+			CALL addLine ON textBox WITH i
+		CALL addLine ON textBox WITH (CALL getDescription ON level)
+		
+----------
+CHANGE CLASS Global
+	CHANGE METHOD init
+		REMOVE LINE "loadLevels();"
+	CHANGE METHOD loadLevels
+		CHANGE PARAMS TO ResourceManager resources
+		CHANGE ACCESS TO PUBLIC
+		CHANGE LINE "Ommelet ommelet..."
+			REPLACE "getResources()" WITH "resources"
+
+CHANGE CLASS LevelSelect
+	INIT STATIC BOOL levelsLoaded AS false
+	CHANGE METHOD onCreate
+		INSERT BEFORE "createLevelButtons();"
+			IF NOT levelsLoaded
+				CALL loadLevels ON Global WITH (CALL getResources)
+				SET levelsLoaded TO TRUE 

@@ -1,0 +1,50 @@
+[page title=Square Runner]
+	Game by Peter Gagliardi
+	
+	Objective:
+	Avoid obstacles, collect powerups, and reach the goal of each level. 
+[page title=Controls]
+	Left Arrow: Move left
+	Right Arrow: Move right
+	Spacebar: Fire lasers (if you have enough ammo)
+	P: Pause Game
+	Esc: Quit Level
+[page title=Blocks]
+	[pic id=block]
+	[pic id=movingBlock_left]
+	[pic id=breakableBlock]
+	[pic id=lockBlock]
+	[pic id=moneyBlock]
+	Blocks are the obstacles to avoid
+	Types:
+	Normal Block - Moves toward you
+	Moving Block - Moves left or right
+	Breakable Block - You can pass through these unharmed
+	Lock - You can only pass these if you have a key
+	Money Block - Shoot this to add to your score
+[page title=Powerups]
+	[pic id=invincible]
+	[pic id=slow]
+	[pic id=ammo]
+	[pic id=moneyBag]
+	[pic id=key]
+	
+	Types:
+	Invincible - Makes you invincible for a short time
+	Slow - Slows down the falling blocks
+	Ammo - Increases your ammuniton
+	Money Bag - Adds to your score
+	Key - lets you pass through locks
+[page title=Tiles]
+	[pic id=finishTile]
+	[pic id=reloadTile]
+	[pic id=goldTile]
+	[pic id=minusCashTile]
+	[pic id=flipTile]
+	Tiles Act like powerups when you pass over them
+	Types:
+	Finish Tile - Pass over this to win the level
+	Reload Tile - Adds to Ammo and Score
+	Gold Tile - Adds to Score
+	Minus Cash Tile - Subtracts from Score
+	Flip Tile - Flips Controls

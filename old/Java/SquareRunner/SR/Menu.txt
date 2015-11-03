@@ -1,0 +1,48 @@
+onCreate:
+	Set background "menu"
+	Create "Play" button at position (-176, 320)
+	Set button action:
+		Go to level select mode
+	Create "Info" button at position (-240, 368)
+		Go to Info mode
+	Create "Credits" button at position (-304, 416)
+		Go to Credits mode
+	Create disabled "Achievements" button at position (640, 320)
+	Create disabled "Options" button at position (704, 368)
+	Create disabled "Infinite Mode" button at position (768, 416)
+	Create Title at position (160, -320)
+	If initialization is complete:
+		For first three buttons
+			Set x position to 176
+		For second three buttons
+			Set x position to 336
+		Set the title y position to 0
+onEnter:
+	For all objects
+		Execute onFrame event
+	If all objects are in position
+		Initalization is complete
+	For the first three buttons
+		If x coordinate is not 176
+			Move to the right 16 pixels
+	For the second three buttons
+		If x coordinate is not 336
+			Move to the left 16 pixels
+	If the title's y position is not at 0
+		Move the Title down 16 pixels
+onFrame:
+	For all objects:
+		execute onFrame event
+onKeyPress(SHIFT && DELETE):
+	For every level
+		Lock level
+		Set high score to 0
+	Unlock the first level
+	Save level locked data
+	Save high scores
+onDestroy:
+	Destroy all objects
+onDraw:
+	Draw background
+	Draw Buttons
+	Draw Title

@@ -1,0 +1,15 @@
+CHANGE CLASS MovingBlock
+	CHANGE METHOD onFrame
+		INSERT AFter "super.onFrame();"
+			INIT lBound = Game.GAME_X - (CALL getWidth)
+			INIT rBound = Game.GAME_X + Game.GAME_WIDTH + (CALL getWidth)
+		CHANGE LINE "if (getX() <= ..."
+			IF (CALL getX) <= lBound
+		CHANGE LINE "setX(Game.GAME_X + ..."
+			INIT offset AS (CALL getX) - lBound
+			CALL setX WITH rBound - offset
+		CHANGE LINE "if (getX() >= ..."
+			ELSE IF (CALL getX) + (CALL getWidth) >= rBound
+		CHANGE LINE "setX(Game.GAME_X);"
+			INIT offset AS (CALL getX) - rBound
+			CALL setX WITH lBound - offset

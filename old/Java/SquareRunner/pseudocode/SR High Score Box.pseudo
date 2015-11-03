@@ -1,0 +1,30 @@
+CHANGE CLASS Game
+	DEFINE OutputBox scoreBox
+	PROTECTED GETTER getScoreBox
+	CHANGE METHOD onCreate
+		APPEND LINES
+			SET scoreBox AS NEW OutputBox WITH 388, 32
+			CALL setTextColor ON scoreBox WITH Color.WHITE
+	CHANGE METHOD onDraw
+		INSERT AFTER "drawUnit(textBox..."
+			CALL drawUnit WITH scoreBox, painter
+	CHANGE METHOD updateTextBox
+		DELETE LINES FROM "string = \"Score:\"..." TO "textBox.addLine(string);"
+		DELETE LINES FROM "string = \"Highscore:\"..." TO "textBox.addLine(string);"
+	METHOD updateScoreBox
+		DEFINE String string
+		CALL clear ON scoreBox
+		SET string TO "Score: " + (CALL getValue ON score) + " Highscore: " + (CALL getHighValue ON score)
+		CALL addLine ON scoreBox WITH string 
+		
+
+CHANGE CLASS InfinityMode
+	REMOVE METHOD updateTextBox
+	OVERRIDE METHOD updateScoreBox
+		CALL updateTextBox ON SUPER
+		CALL addLine ON (CALL getScoreBox) WITH "Wave: " + (CALL getValue ON wave) + " Highest Wave: " + (CALL getHighValue ON wave)
+//---------
+CHANGE CLASS Game
+	CHANGE METHOD onFrame
+		APPEND LINE
+			CALL updateScoreBox

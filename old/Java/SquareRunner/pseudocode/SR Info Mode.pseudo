@@ -1,0 +1,52 @@
+CLASS InfoMode EXTENDS Program
+	DEFINE Button backButton
+	DEFINE InfoPanel infoPanel
+	METHOD onCreate
+		CALL setBackgound WITH (CALL getBackground ON (CALL getResources) WITH "main")
+		SET backButton TO NEW Button WITH 256, 272, (CALL getSprite ON (CALL getResources) WITH "button"), "Back", true
+		CALL setAction ON backButton WITH (NEW Action:
+			CALL setNextProgram WITH (NEW Menu))
+		CALL setLabelColor ON backButton WITH Color.WHITE
+		SET infoPanel TO NEW InfoPanel WITH (CALL loadOmmelet ON (CALL getResources) WITH "omml/", "info"
+	METHOD onMousePress PARAMS button, x, y
+		CALL testMousePress WITH backButton, button, x, y
+	METHOD onMouseRelease PARAMS button, x, y
+		CALL testMouseRelease WITH backButton, button, x, y
+	METHOD onMouseMove PARAMS x, y
+		CALL testMouseMotion WITH backButton, x, y
+	METHOD onKeyRelease PARAMS key
+		CALL onKeyRelease ON infoPanel WITH key
+	METHOD onDraw PARAMS painter
+		CALL drawBackground ON painter WITH THIS
+		CALL drawUnit WITH backButton, painter
+		CALL drawUnit WITH infoPanel, painter
+		
+CLASS InfoPanel EXTENDS Unit PARAMS infoOmmelet
+	INIT int page AS 0
+	INIT List<String> text AS NEW List<String>
+	INIT List<String> title AS NEW List<String>
+	INIT List<List<Sprite>> images AS NEW List<List<Sprite>>
+	. . .
+	METHOD onKeyRelease PARAMS key
+		IF key EQUALS Key.LEFT OR key EQUALS Key.RIGHT
+			CALL switchPage WITH key
+	METHOD onDraw
+		. . .
+	METHOD exitPage
+		. . .
+	METHOD switchPage PARAMS key
+		IF key EQUALS Key.LEFT
+			CALL exitPage
+			IF page > 0
+				DECREMENT page
+			ELSE
+				SET page TO (CALL size ON text) - 1
+			CALL initPage
+		ELSE IF key EQUALS Key.RIGHT
+			CALL exitPage
+			IF page < (CALL size ON text) - 1
+				INCREMENT page
+			ELSE
+				SET page TO 0
+			CALL initPage
+		

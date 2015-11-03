@@ -1,0 +1,46 @@
+Old Key:
+1	Block
+2	MovingBlock	(Left)
+3	Invincible (Right)
+4	Slow
+5	Finish Tile
+6	Ammo
+7	MovingBlock
+8	Moneybag
+9	Key
+A	Breakable Block
+B	Lock Block
+C	Gold Tile
+D	MinusCash Tile
+E	Reload Tile
+F	Money Block
+G	Flip Tile (Reverse)
+H	Flip Tile (Normal)
+
+Blocks:
+1	Block
+>	MovingBlock (Right)
+<	MovingBlock	(Left)
+M	MoneyBlock
+L	LockBlock
+B	Breakable Block
+
+
+Powerups:
+I	Invincible
+$	Moneybag
+K	Key
+A	Ammo
+
+Tiles:
+F-	Flip Tile
+R-	Reload Tile
+G-	Gold Tile
+!-	MinusCashTile
+X-	Finish Tile
+
+Unused Letters:
+CDEHJKNOPQSTUVWYZ
+
+Unused Numbers:
+23456789

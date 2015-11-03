@@ -1,0 +1,912 @@
+package com.gags.sample.randdungeon;
+
+import com.gags.engine.GameWindow;
+
+/**
+ * Program entry point
+ * @author Peter Gagliardi
+ */
+public class Main {
+
+	/**
+	 * Run the program
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		MapTest mapTest = new MapTest(640, 480, 30);
+		GameWindow gameWindow = new GameWindow(mapTest);
+		gameWindow.setVisible(true);
+	}
+
+}
+
+package com.gags.sample.randdungeon;
+
+import java.util.ArrayList;
+
+import com.gags.engine.GameObject;
+import com.gags.engine.graphics.Tileset;
+import com.gags.engine.lib.ObjectManager;
+import com.gags.engine.lib.ResourceManager;
+import com.gags.engine.obj.InvisibleObject;
+import com.gags.engine.obj.ObjectContainer;
+import com.gags.engine.obj.TileableObject;
+
+/**
+ * An area surrounded by walls
+ * and is tileable
+ * @author Peter Gagliardi
+ */
+public abstract class WalledArea extends GameObject implements TileableObject, ObjectContainer<InvisibleObject> {
+
+	/** Tileset */
+	protected static Tileset tileset;
+	
+	/** relative coordinates in tiles */
+	protected int[] coords;
+	
+	/** Objects */
+	private ArrayList<InvisibleObject> objects;
+	
+	//Not sure of this one
+	public WalledArea(int x, int y) {
+		super(x, y);
+		objects = new ArrayList<InvisibleObject>();
+	}
+
+	public static void setTileset(String id) {
+		tileset = ResourceManager.getTileset(id);
+	}
+
+	@Override
+	public InvisibleObject get(int x, int y) {
+		for (InvisibleObject i : objects) {
+			if (i.getX() == x && i.getY() == y)
+				return i;
+		}
+		return null;
+	}
+
+	@Override
+	public InvisibleObject add(int x, int y) {
+		InvisibleObject object = new InvisibleObject(x, y, Types.WALL);
+		objects.add(object);
+		ObjectManager.addObject(object);
+		return object;
+	}
+
+	@Override
+	public InvisibleObject remove(int x, int y) {
+		InvisibleObject object = get(x, y);
+		objects.remove(object);
+		ObjectManager.destroyObject(object.getId());
+		return null;
+	}
+
+	@Override
+	public int toPixels(int tiles) {
+		return tiles * MapTest.TILE_SIZE;
+	}
+
+	@Override
+	public int toAbsoluteX(int relPx) {
+		return getX() + relPx;
+	}
+
+	@Override
+	public int toAbsoluteY(int relPx) {
+		return getY() + relPx;
+	}
+	
+	/**
+	 * Set the relative coordinates for the walled area
+	 */
+	public abstract void setCoordinates();
+
+}
+
+package com.gags.sample.randdungeon;
+
+import com.gags.engine.GameObject;
+import com.gags.engine.id.ObjectType;
+import com.gags.engine.lib.Motion;
+import com.gags.engine.motion.CardinalDirection;
+import com.gags.engine.obj.DirectionalObject;
+/**
+ * The user-controlled player object
+ * @author Peter Gagliardi
+ */
+public class Player extends GameObject implements DirectionalObject {
+	
+	/** Type name */
+	public static final String TYPE_NAME = "player";
+
+	/** Speed of the player */
+	private static final int PLAYER_SPEED = 8;
+	
+	/** Destination x position */
+	private int destX;
+	/** Destination y position */
+	private int destY;
+
+	public Player(int x, int y) {
+		super(x, y, Types.PLAYER);
+		destX = x;
+		destY = y;
+		setDimensions(getSprite().getWidth(), getSprite().getHeight());
+		updateCollisionMask();
+	}
+	
+	@Override
+	public void onKeyPressed(int keyCode) {
+		if (atDestination()) {
+			CardinalDirection direction = Motion.getCardinalKeyDirection(keyCode);
+			moveDest(direction, true);
+			setFrameByDirection(direction);
+			setVelocity(direction.getDegrees(), PLAYER_SPEED);
+		}
+	}
+
+	@Override
+	public void onFrame() {
+		move();
+		if (atDestination())
+			stop();
+		updateCollisionMask();
+	}
+	
+	@Override
+	public void onCollision(ObjectType type) {
+		CardinalDirection direction = Motion.getCardinalDirection(getXSpeed(), getYSpeed());
+		
+		switch ((Types)type) {
+			case WALL:
+				moveDest(direction, false);
+				setPosition(destX, destY); 
+				stop();
+				break;
+			default:
+				break;
+		}
+	}
+	
+	@Override
+	public void setFrameByDirection(CardinalDirection direction) {
+		int index = 0;
+		switch (direction) {
+			case NORTH:
+				index = FRAME_UP;
+				break;
+			case SOUTH:
+				index = FRAME_DOWN;
+				break;
+			case EAST:
+				index = FRAME_RIGHT;
+				break;
+			case WEST:
+				index = FRAME_LEFT;
+				break;
+		}
+		setFrame(index);
+	}
+
+	/**
+	 * Check if the player is at its destination
+	 * @return
+	 */
+	private boolean atDestination() {
+		return getX() == destX && getY() == destY; 
+	}
+	
+	/**
+	 * Move the destination square one space forwards or backwards
+	 * @param forwards if the destination should be moved 
+	 * forwards
+	 */
+	private void moveDest(CardinalDirection direction, boolean forwards) {
+		if (direction == null)
+			return;
+		
+		if (forwards) {
+			destX += Motion.getXSpeed(direction, MapTest.TILE_SIZE);
+			destY += Motion.getYSpeed(direction, MapTest.TILE_SIZE);
+		}
+		else {
+			destX -= Motion.getXSpeed(direction, MapTest.TILE_SIZE);
+			destY -= Motion.getYSpeed(direction, MapTest.TILE_SIZE);
+		}	
+	}
+}
+
+package com.gags.sample.randdungeon;
+
+import com.gags.engine.GameObject;
+import com.gags.engine.id.ObjectSubtype;
+import com.gags.engine.id.ObjectType;
+import com.gags.engine.obj.InvisibleObject;
+
+public enum Types implements ObjectType {
+	ROOM("room") {
+
+		@Override
+		public GameObject getInstance(int x, int y, ObjectSubtype subtype) {
+			return new Room(x, y);
+		}
+		
+	},
+	HALLWAY("hallway") {
+
+		@Override
+		public GameObject getInstance(int x, int y, ObjectSubtype subtype) {
+			return new Hallway(x, y);
+		}
+		
+	},
+	WALL("wall") {
+		
+		@Override
+		public GameObject getInstance(int x, int y, ObjectSubtype subtype) {
+			return new InvisibleObject(x, y, this);
+		}
+	}, 
+	PLAYER("player") {
+
+		@Override
+		public GameObject getInstance(int x, int y, ObjectSubtype subtype) {
+			return new Player(x, y);
+		}
+		
+	};
+	
+	/** Type name */
+	private String typeName;
+	
+	private Types(String typeName) {
+		this.typeName = typeName;
+	}
+	
+	@Override
+	public String getTypeName() {
+		return typeName;
+	}
+
+}
+
+package com.gags.sample.randdungeon;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+
+import com.gags.engine.GameCanvas;
+import com.gags.engine.lib.Collision;
+import com.gags.engine.lib.ObjectManager;
+import com.gags.engine.motion.CardinalDirection;
+import com.gags.engine.resources.ResourceFileReader;
+
+public class MapTest extends GameCanvas {
+
+	/** Size of one tile */
+	public static final int TILE_SIZE = 32;
+	
+	/** Serial ID */
+	private static final long serialVersionUID = -5156607746550247804L;
+
+	/** test room */
+	private Room testRoom;
+	/** test player */
+	private Player player;
+	
+	public MapTest(int width, int height, int fps) {
+		super(width, height, fps);
+		
+		setBackground(Color.BLACK);
+		
+		ResourceFileReader reader = new ResourceFileReader();
+		reader.readXMLFile("res/resources.xml");
+		reader.read();
+		
+		
+		WalledArea.setTileset("tileset");
+		
+		testRoom = new Room(0, 0);
+		testRoom.setSize(7);
+		testRoom.setNewAdjacentRoom(CardinalDirection.EAST, 5, 7);
+		testRoom.setNewAdjacentRoom(CardinalDirection.SOUTH, 3, 5);
+		testRoom.setNewAdjacentRoom(CardinalDirection.WEST, 9, 3);
+		testRoom.setNewAdjacentRoom(CardinalDirection.NORTH, 5, 3);
+		
+		player = new Player(64,64);
+		ObjectManager.addObject(player);
+	}
+
+	@Override
+	public void checkGameState() {
+		performFrameEvents();
+		handleCollisions();
+
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		//Get offset
+		int xOffset = getCenter().x - player.getX();
+		int yOffset = getCenter().y - player.getY();
+		Point offset = new Point(xOffset, yOffset); 
+		testRoom.setDrawOffset(offset);
+		testRoom.draw(g);
+		//testHall.draw(g);
+		
+		//Painter.drawBoundingBoxes(Types.WALL, Color.RED, g);
+		//Painter.drawBoundingBoxes(Types.PLAYER, Color.CYAN, g);
+		player.setDrawOffset(offset);
+		player.draw(g);
+		//ObjectManager.drawObjects(Types.PLAYER, g);
+	}
+	
+	@Override
+	public void handleCollisions() {
+		Collision.testCollisions(Types.PLAYER, Types.WALL);
+	}
+
+	@Override
+	public void handleKeyPressed(int keyCode) {
+		if (keyCode == KeyEvent.VK_P)
+			setPaused(!isPaused());
+		if (!isPaused() && (keyCode == KeyEvent.VK_LEFT 
+			|| keyCode == KeyEvent.VK_RIGHT 
+			|| keyCode == KeyEvent.VK_UP 
+			|| keyCode == KeyEvent.VK_DOWN)) 
+			ObjectManager.executeKeyPressedEvents(Types.PLAYER, keyCode);
+		
+	}
+	
+	@Override
+	public void performFrameEvents() {
+		ObjectManager.executeFrameEvents(Types.PLAYER);
+	}
+
+}
+
+package com.gags.sample.randdungeon;
+
+import java.util.ArrayList;
+
+import com.gags.engine.collision.CollisionType;
+import com.gags.engine.graphics.Sprite;
+import com.gags.engine.graphics.Tileset;
+import com.gags.engine.graphics.TilesetPainter;
+import com.gags.engine.id.ObjectID;
+import com.gags.engine.lib.ObjectManager;
+import com.gags.engine.lib.ResourceManager;
+import com.gags.engine.motion.Orientation;
+import com.gags.engine.obj.InvisibleObject;
+
+/**
+ * Hallway structure
+ * @author Peter Gagliardi
+ */
+public class Hallway extends WalledArea {
+
+	/** Size of the room in tiles */
+	private int size;
+	/** Walls */
+	private ArrayList<InvisibleObject> walls;
+	/** Orientation */
+	private Orientation orientation;
+	
+	public Hallway(int x, int y) {
+		super(x, y);
+		setId(new ObjectID(Types.HALLWAY));
+		setCollisionMask(CollisionType.RECTANGLE);
+		walls = new ArrayList<InvisibleObject>();
+	}
+	
+	public void setOrientation(Orientation orientation) {
+		this.orientation = orientation;
+	}
+
+	/**
+	 * Set the orientation
+	 * @param size the length of the hallway
+	 * @param orientation
+	 */
+	public void setSize(int size) {
+		this.size = size;
+		
+		if (orientation == Orientation.HORIZONTAL)
+			setDimensions(toPixels(size), toPixels(3));
+		else
+			setDimensions(toPixels(3), toPixels(size));
+		
+		updateCollisionMask();
+		
+		createWalls();
+		tile();
+	}
+	
+	@Override
+	public void tile() {
+		final Tileset tileset = ResourceManager.getTileset("tileset");
+		
+		TilesetPainter painter;
+		
+		switch (orientation) {
+			case HORIZONTAL:
+				painter = new TilesetPainter(tileset, toPixels(size), toPixels(size));
+				for(int i = 0; i < size; i++) {
+					painter.setTile(0 + i, 0, 1, 0);
+					painter.setTile(0 + i, 2, 1, 2);
+					
+					painter.setTile(0 + i, 1, 1, 1);
+				}
+				setSprite(new Sprite(painter.getImage(), "room"));
+				break;
+			case VERTICAL:
+				painter = new TilesetPainter(tileset, toPixels(size), toPixels(size));
+				for(int i = 0; i < size; i++) {
+					painter.setTile(0, 0 + i, 0, 1);
+					painter.setTile(2, 0 + i, 2, 1);
+					
+					painter.setTile(1, 0 + i, 1, 1);
+				}
+				setSprite(new Sprite(painter.getImage(), "room"));
+				break;
+		}	
+	}
+	
+	@Override
+	public void setCoordinates() {
+		coords = new int[3];
+		for (int i = 0; i < 3; i++)
+			coords[i] = i;
+	}
+
+	/**
+	 * Create the walls 
+	 */
+	public void createWalls() {
+		final int FULL_WALL_LENGTH = toPixels(size);
+		final int ONE_TILE = toPixels(1);
+		
+		InvisibleObject wall;
+		
+		switch (orientation) {
+			case HORIZONTAL:
+				wall = new InvisibleObject(getX(), getY(), Types.WALL);
+					wall.setDimensions(FULL_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+					walls.add(wall);
+				wall = new InvisibleObject(getX(), toAbsoluteY(toPixels(2)), Types.WALL);
+					wall.setDimensions(FULL_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+					walls.add(wall);
+				break;
+			case VERTICAL:
+				wall = new InvisibleObject(getX(), getY(), Types.WALL);
+					wall.setDimensions(ONE_TILE, FULL_WALL_LENGTH);
+					wall.updateCollisionMask();
+					walls.add(wall);
+				wall = new InvisibleObject(toAbsoluteX(toPixels(2)), getY(), Types.WALL);
+					wall.setDimensions(ONE_TILE, FULL_WALL_LENGTH);
+					wall.updateCollisionMask();
+					walls.add(wall);
+				break;
+		}
+		
+		for (InvisibleObject i: walls)
+			ObjectManager.addObject(i);
+	}
+}
+
+package com.gags.sample.randdungeon;
+
+import java.awt.Graphics;
+import java.awt.Point;
+import java.util.EnumMap;
+import java.util.Map;
+
+import com.gags.engine.collision.CollisionType;
+import com.gags.engine.graphics.Sprite;
+import com.gags.engine.graphics.TilesetPainter;
+import com.gags.engine.id.ObjectID;
+import com.gags.engine.lib.ObjectManager;
+import com.gags.engine.motion.CardinalDirection;
+import com.gags.engine.obj.InvisibleObject;
+
+/**
+ * Defines a room with variable
+ * width and height 
+ * @author Peter Gagliardi
+ */
+public class Room extends WalledArea{
+	
+	/** 
+	 * Size of the room in tiles,
+	 * must be an odd number
+	 */
+	private int size;
+	/** size of the room + walls in tiles */
+	private int size2;
+	/** Hallways */
+	private Map<CardinalDirection, Hallway> hallways;
+	/** AdjacentRooms */
+	private Map<CardinalDirection, Room> adjacentRooms;
+	
+	public Room(int x, int y) {
+		super(x, y);
+		setCollisionMask(CollisionType.RECTANGLE);
+		setId(new ObjectID(Types.ROOM));
+		hallways = new EnumMap<CardinalDirection, Hallway>(CardinalDirection.class);
+		adjacentRooms = new EnumMap<CardinalDirection, Room>(CardinalDirection.class);
+	}
+	
+	
+	
+	@Override
+	public void setDrawOffset(Point drawOffset) {
+		super.setDrawOffset(drawOffset);
+		for (Room i: adjacentRooms.values())
+			i.setDrawOffset(drawOffset);
+		for (Hallway i: hallways.values())
+			i.setDrawOffset(drawOffset);
+	}
+
+
+
+	@Override
+	public void draw(Graphics g) {
+		super.draw(g);
+		for (Room i: adjacentRooms.values())
+			i.draw(g);
+		for (Hallway i: hallways.values())
+			i.draw(g);
+	}
+
+	@Override
+	public void tile() {
+		RoomPainter painter = new RoomPainter();
+		setSprite(painter.tile());
+	}
+
+	@Override
+	public void setCoordinates() {
+		coords = new int[4];
+		coords[0] = 0;
+		coords[1] = 1;
+		coords[2] = size2 / 2 + 1;
+		coords[3] = size + 1;
+		
+	}
+
+	/**
+	 * Set the size, coordinates, and walls
+	 * @param size the size of the room in tiles.
+	 * Should be an odd number
+	 */
+	public void setSize(int size) {
+		this.size = size;
+		size2 = size + 2;
+		
+		setDimensions(toPixels(size2), toPixels(size2));
+		setCoordinates();
+		
+		createWalls();
+		tile();
+	}
+	
+	/**
+	 * Create a new adjacent room and a connecting hallway
+	 * @param direction the direction to create the room in
+	 * @param size the size of the new room
+	 */
+	public void setNewAdjacentRoom(CardinalDirection direction, int size, int hallLength) {
+		final int HALL_OFFSET = toPixels(hallLength);
+		final int HALL_OFFSET2 = toPixels(coords[2] - 2);
+		final int ROOM_OFFSET = toPixels(size / 2);
+		final int FULL_ROOM_OFFSET = toPixels(size + 2);
+		
+		int roomX = 0;
+		int roomY = 0;
+		int hallX = 0;
+		int hallY = 0;
+		
+		switch (direction) {
+			case EAST:
+				hallX = toAbsoluteX(getWidth());
+				hallY = toAbsoluteY(HALL_OFFSET2);
+				break;
+			case NORTH:
+				hallX = toAbsoluteX(HALL_OFFSET2);
+				hallY = toAbsoluteY(-HALL_OFFSET);
+				break;
+			case SOUTH:
+				hallX = toAbsoluteX(HALL_OFFSET2);
+				hallY = toAbsoluteY(getHeight());
+				break;
+			case WEST:
+				hallX = toAbsoluteX(-HALL_OFFSET);
+				hallY = toAbsoluteY(HALL_OFFSET2);
+				break;
+		}
+		
+		Hallway hall = new Hallway(hallX, hallY);
+		hall.setOrientation(direction.toOrientation());
+		hall.setSize(hallLength);
+		
+		switch(direction) {
+			case EAST:
+				roomX = hall.toAbsoluteX(hall.getWidth());
+				roomY = hall.toAbsoluteY(-ROOM_OFFSET);
+				break;
+			case NORTH:
+				roomX = hall.toAbsoluteX(-ROOM_OFFSET);
+				roomY = hall.toAbsoluteY(-FULL_ROOM_OFFSET);
+				break;
+			case SOUTH:
+				roomX = hall.toAbsoluteX(-ROOM_OFFSET);
+				roomY = hall.toAbsoluteY(hall.getHeight());
+				break;
+			case WEST:
+				roomX = hall.toAbsoluteX(-FULL_ROOM_OFFSET);
+				roomY = hall.toAbsoluteY(-ROOM_OFFSET);
+				break;	
+		}
+		
+		Room room = new Room(roomX, roomY);
+		room.setSize(size);
+		
+		
+		
+		adjacentRooms.put(direction, room);
+		hallways.put(direction, hall);
+		update(direction);
+		room.update(direction.getOpposite());
+		removeWall(direction);
+		addShortWalls(direction);
+		room.removeWall(direction.getOpposite());
+		room.addShortWalls(direction.getOpposite());
+		
+		
+	}
+	
+	/**
+	 * Update the tiling for new hallways
+	 */
+	public void update(CardinalDirection direction) {
+		RoomPainter painter = new RoomPainter();
+		painter.update(direction);
+	}
+	
+	/**
+	 * Draw tracking an object
+	 * @param id the id of the object to track
+	 * @param g the graphics to draw on
+	 */
+	public void drawTracking(ObjectID id, Graphics g) {
+		if (!ObjectManager.objectExists(id)) {
+			draw(g);
+			return;
+		}
+		
+		//Player player = (Player) ObjectManager.getObject(id);
+		//int xOffset = player.getX(); 
+		//int yOffset = 
+		
+	}
+
+	/**
+	 * Create the walls
+	 */
+	private void createWalls() {
+		final int FULL_WALL_LENGTH = toPixels(size);
+		final int ONE_TILE = toPixels(1);
+		//relative coordinates in pixels
+		final int C1 = toPixels(coords[0]);
+		final int C2 = toPixels(coords[1]);
+		final int C4 = toPixels(coords[3]);
+		//Absolute coordinates
+		final int X1 = toAbsoluteX(C1);
+		final int X2 = toAbsoluteX(C2);
+		final int X4 = toAbsoluteX(C4);
+		final int Y1 = toAbsoluteY(C1);
+		final int Y2 = toAbsoluteY(C2);
+		final int Y4 = toAbsoluteY(C4);
+		
+		InvisibleObject wall;
+		
+		wall = add(X2,Y1);
+			wall.setDimensions(FULL_WALL_LENGTH, ONE_TILE);
+			wall.updateCollisionMask();
+		wall = add(X4, Y2);
+			wall.setDimensions(ONE_TILE, FULL_WALL_LENGTH);
+			wall.updateCollisionMask();
+		wall = add(X2, Y4);
+			wall.setDimensions(FULL_WALL_LENGTH, ONE_TILE);
+			wall.updateCollisionMask();
+		wall = add(X1, Y2);
+			wall.setDimensions(ONE_TILE, FULL_WALL_LENGTH);
+			wall.updateCollisionMask();
+	}
+	
+	/**
+	 * Remove one wall
+	 * @param direction the side of the room to remove
+	 */
+	private void removeWall(CardinalDirection direction) {
+		//Relative Coordinates
+		final int C1 = toPixels(coords[0]);
+		final int C2 = toPixels(coords[1]);
+		final int C4 = toPixels(coords[3]);
+				
+		
+		switch (direction) {
+		case EAST:
+			remove(toAbsoluteX(C4), toAbsoluteY(C2));
+			break;
+		case NORTH:
+			remove(toAbsoluteX(C2), toAbsoluteY(C1));
+			break;
+		case SOUTH:
+			remove(toAbsoluteX(C2), toAbsoluteY(C4));
+			break;
+		case WEST:
+			remove(toAbsoluteX(C1), toAbsoluteY(C2));
+			break;
+		}
+	}
+	
+	/**
+	 * Add short walls to one side of the room
+	 * @param direction the side of the room
+	 */
+	private void addShortWalls(CardinalDirection direction) {
+		final int HALF_WALL_LENGTH = toPixels(size / 2);
+		final int ONE_TILE = toPixels(1);
+		//relative coordinates in pixels
+		final int C1 = toPixels(coords[0]);
+		final int C2 = toPixels(coords[1]);
+		final int C3 = toPixels(coords[2]);
+		final int C4 = toPixels(coords[3]);
+		//Absolute coordinates
+		final int X1 = toAbsoluteX(C1);
+		final int X2 = toAbsoluteX(C2);
+		final int X3 = toAbsoluteX(C3);
+		final int X4 = toAbsoluteX(C4);
+		final int Y1 = toAbsoluteY(C1);
+		final int Y2 = toAbsoluteY(C2);
+		final int Y3 = toAbsoluteY(C3);
+		final int Y4 = toAbsoluteY(C4);
+		
+		InvisibleObject wall;
+		
+		switch (direction) {
+			case EAST:
+				wall = add(X4, Y2);
+					wall.setDimensions(ONE_TILE, HALF_WALL_LENGTH);
+					wall.updateCollisionMask();
+				wall = add(X4, Y3);
+					wall.setDimensions(ONE_TILE, HALF_WALL_LENGTH);
+					wall.updateCollisionMask();
+				break;
+			case NORTH:
+				wall = add(X2,Y1);
+					wall.setDimensions(HALF_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+				wall = add(X3,Y1);
+					wall.setDimensions(HALF_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+				break;
+			case SOUTH:
+				wall = add(X2, Y4);
+					wall.setDimensions(HALF_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+				wall = add(X3, Y4);
+					wall.setDimensions(HALF_WALL_LENGTH, ONE_TILE);
+					wall.updateCollisionMask();
+				break;
+			case WEST:
+				wall = add(X1, Y2);
+					wall.setDimensions(ONE_TILE, HALF_WALL_LENGTH);
+					wall.updateCollisionMask();
+				wall = add(X1, Y3);
+					wall.setDimensions(ONE_TILE, HALF_WALL_LENGTH);
+					wall.updateCollisionMask();
+				break;
+		}
+	}
+	
+ 	private class RoomPainter extends TilesetPainter {
+		
+		public RoomPainter() {
+			super(tileset, toPixels(size2), toPixels(size2));
+		}
+		
+		@Override
+		public Sprite tile() {
+			//Corners
+			final int NW = tileset.getFrameIndex(0, 0);
+			final int NE = tileset.getFrameIndex(2, 0);
+			final int SE = tileset.getFrameIndex(2, 2);
+			final int SW = tileset.getFrameIndex(0, 2);
+			//Walls
+			final int NORTH = tileset.getFrameIndex(1, 0);
+			final int EAST = tileset.getFrameIndex(2, 1);
+			final int SOUTH = tileset.getFrameIndex(1, 2);
+			final int WEST = tileset.getFrameIndex(0, 1);
+			//Floor
+			final int FLOOR = tileset.getFrameIndex(1, 1);
+			//Coordinates
+			final int C1 = coords[0];
+			final int C2 = coords[1];
+			final int C4 = coords[3];
+			
+			setTile(C1, C1, NW);
+			setTile(C4, C1, NE);
+			setTile(C4, C4, SE);
+			setTile(C1, C4, SW);
+			for (int i = 0; i < size; i++) {
+				setTile(C2 + i, C1, NORTH);
+				setTile(C4, C2 + i, EAST);
+				setTile(C2 + i, C4, SOUTH);
+				setTile(C1, C2 + i, WEST);
+				for (int j = 0; j < size; j++) {
+					setTile(C2 + i, C2 + j, FLOOR);
+				}
+			}
+			
+			return new Sprite(getImage(), Types.ROOM.getTypeName());
+		}
+		
+		/**
+		 * Update the image
+		 * @param image the tiled image to fix
+		 */
+		public void update(CardinalDirection direction) {
+			//Corners
+			final int NE = tileset.getFrameIndex(4, 0);
+			final int NW = tileset.getFrameIndex(3, 0);
+			final int SE = tileset.getFrameIndex(4, 1);
+			final int SW = tileset.getFrameIndex(3, 1);
+			//Floor
+			final int FLOOR = tileset.getFrameIndex(1, 1);
+			//Coordinates
+			final int C1 = coords[0];
+			final int C4 = coords[3];
+			//Coordinate offsets
+			final int C3_1 = coords[2] - 2;
+			final int C3_2 = coords[2] - 1;
+			final int C3_3 = coords[2];
+			
+			
+			setImage(getSprite().getFrame(0));
+			
+			switch (direction) {
+				case NORTH:
+					setTile(C3_1, C1, SE);
+					setTile(C3_2, C1, FLOOR);
+					setTile(C3_3, C1, SW);
+					break;
+				case SOUTH:
+					setTile(C3_1, C4, NE);
+					setTile(C3_2, C4, FLOOR);
+					setTile(C3_3, C4, NW);
+					break;
+				case EAST:
+					setTile(C4, C3_1, SW);
+					setTile(C4, C3_2, FLOOR);
+					setTile(C4, C3_3, NW);
+					break;
+				case WEST:
+					setTile(C1, C3_1, SE);
+					setTile(C1, C3_2, FLOOR);
+					setTile(C1, C3_3, NE);
+					break;
+			}
+			
+		}
+	}
+}
+
+

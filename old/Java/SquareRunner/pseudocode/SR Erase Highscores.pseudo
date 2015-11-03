@@ -1,0 +1,48 @@
+CHANGE CLASS Options
+	DEFINE Button eraseButton
+	CHANGE METHOD onCreate
+		INSERT BEFORE "colorButtons = ..."
+			SET eraseButton TO NEW Button WITH 128, 400, (CALL getSprite ON (CALL getResources) WITH "button"), "Erase Scores", true
+			CALL setAction ON eraseButton WITH (ANON Action
+				OVERRIDE performAction
+					CALL clear ON (CALL getSaveData)
+			)
+			CALL setLabelColor ON eraseButton WITH Color.WHITE
+	CHANGE METHOD onMousePress
+		APPEND LINE
+			CALL testMousePress WITH eraseButton, button, x, y
+	CHANGE METHOD onMouseRelease
+		INSERT AFTER "testMouseRelease(backButton..."
+			CALL testMouseRelease WITH eraseButton, button, x, y
+	CHANGE METHOD onMouseMove
+		APPEND LINE
+			CALL testMouseMotion WITH eraseButton, x, y
+	CHANGE METHOD onDraw
+		INSERT AFTER "drawUnit..."
+			CALL drawUnit WITH eraseButton, painter
+//----------------
+CHANGE CLASS Global
+	DEFINE PRIVATE CONSTANT String ROOT_NODE_NAME AS "gags.game.squarerunner"
+	DEFINE STATIC SaveData saveData
+	STATIC METHOD getSaveData
+		RETURN saveData
+	CHANGE METHOD init
+		INSERT AFTER "levels = ..."
+			SET saveData TO NEW SaveData WITH ROOT_NODE_NAME
+
+CHANGE CLASS Game
+	REMOVE FIELD saveData
+	REMOVE METHOD getSaveData
+	REMOVE CONSTANT NODE_NAME
+	CHANGE METHOD onCreate
+		REMOVE LINE "saveData = ..."
+	CHANGE saveData TO (CALL getSaveData ON Global)
+
+CHANGE CLASS Options
+	CHANGE (CALL getSaveData) TO (CALL getSaveData ON Global)
+//----------------
+CHANGE CLASS InfinityMode
+	CHANGE (CALL getSaveData) TO (CALL getSaveData ON Global)
+	
+CHANGE CLASS ClassicMode
+	CHANGE (CALL getSaveData) TO (CALL getSaveData ON Global)

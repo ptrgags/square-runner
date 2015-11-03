@@ -1,0 +1,28 @@
+12/11/12
+- Player Class variables
+- Added Sprites to project
+- Player movement
+- Frame adjustment
+- Made background into foreground frame
+- I toggles invincibility
+- Null-safe onFrame events
+- Collisions between Block and Player
+
+12/12/12
+- Lowered speed of zombies in Car Defense
+- Zombies are generated randomly (random type, random spawn point)
+- Zombie spawning is done once every second
+- Timer event handles zombie creation
+- Bullets destroy themselves when their target zombie is killed
+
+12/13/12
+- interface ThreadController (imported from GE2)
+- interface ProgramThreadController extends ThreadController
+- Program implements ProgramThreadController
+- interface HasBackground extends Coords, Dimensions
+- Program implements HasBackground
+- Painter.drawBackground(Program) -> Painter.drawBackground(HasBackground)
+- Painter.drawBackgroundColor(Color)
+- Color.TARDIS_BLUE color constant
+- interface HasResources
+- Program implements HasResources (resources: private static -> private)
