@@ -10,7 +10,7 @@ import blynkdev.KeyName;
 import flash.text.TextFormat;
 import Graphics;
 
-class Const 
+class Const
 {
 	//Key Codes
 	public var KEY_SHIFT				:Int;
@@ -51,9 +51,9 @@ class Const
 	public var NUM_GAME_H				:Int;
 	//Text:
 	public var STR_CREDITS				:String;
-	
+
 	//public static inline var SPR_SOUND_TOGGLE = new AnimatedImage(16, 16, new SprSoundToggle());
-	
+
 	public function new(imgs=true)
 	{
 		//Key Codes
@@ -67,28 +67,28 @@ class Const
 		//Sprites
 		if (imgs)
 		{
-			this.SPR_BUTTON = new AnimatedImage(128, 32, new SprButton());
-			this.SPR_LEVEL_BUTTON = new AnimatedImage(256, 32, new SprLevelButton());
-			this.SPR_UP_BUTTON = new AnimatedImage(32, 32, new SprUpButton());
-			this.SPR_DOWN_BUTTON = new AnimatedImage(32, 32, new SprDownButton());
-			this.SPR_BLOCK = new AnimatedImage(16, 16, new SprBlock());
-			this.SPR_MOVING_BLOCK = new AnimatedImage(16, 16, new SprMovingBlock2());
-			this.SPR_MOVING_BLOCK_LEFT = new AnimatedImage(16, 16, new SprMovingBlock());
-			this.SPR_INVINCIBLE = new AnimatedImage(16, 16, new SprInvincible());
-			this.SPR_SLOW = new AnimatedImage(16, 16, new SprSlow());
-			this.SPR_FINISH_TILE = new AnimatedImage(16, 16, new SprFinish());
-			this.SPR_AMMO = new AnimatedImage(16, 16, new SprAmmo());
-			this.SPR_MONEYBAG = new AnimatedImage(16, 16, new SprMoneybag());
-			this.SPR_KEY = new AnimatedImage(16, 16, new SprKey());
-			this.SPR_BREAK_BLOCK = new AnimatedImage(16, 16, new SprBreakBlock());
-			this.SPR_LOCK = new AnimatedImage(16, 16, new SprLock());
-			this.SPR_GOLD_TILE = new AnimatedImage(16, 16, new SprGoldTile());
-			this.SPR_MINUS_CASH = new AnimatedImage(16, 16, new SprMinusCash());
-			this.SPR_RELOAD_TILE = new AnimatedImage(16, 16, new SprReload());
-			this.SPR_MONEY_BLOCK = new AnimatedImage(16, 16, new SprMoneyBlock());
-			this.SPR_FLIP_TILE = new AnimatedImage(16, 16, new SprFlipTile());
-			this.SPR_FLIP_TILE2 = new AnimatedImage(16, 16, new SprFlipTile2());
-			this.SPR_PLAYER = new AnimatedImage(16, 16, new SprPlayer());
+			this.SPR_BUTTON = new AnimatedImage(128, 32, new SprButton(0, 0));
+			this.SPR_LEVEL_BUTTON = new AnimatedImage(256, 32, new SprLevelButton(0, 0));
+			this.SPR_UP_BUTTON = new AnimatedImage(32, 32, new SprUpButton(0, 0));
+			this.SPR_DOWN_BUTTON = new AnimatedImage(32, 32, new SprDownButton(0, 0));
+			this.SPR_BLOCK = new AnimatedImage(16, 16, new SprBlock(0, 0));
+			this.SPR_MOVING_BLOCK = new AnimatedImage(16, 16, new SprMovingBlock2(0, 0));
+			this.SPR_MOVING_BLOCK_LEFT = new AnimatedImage(16, 16, new SprMovingBlock(0, 0));
+			this.SPR_INVINCIBLE = new AnimatedImage(16, 16, new SprInvincible(0, 0));
+			this.SPR_SLOW = new AnimatedImage(16, 16, new SprSlow(0, 0));
+			this.SPR_FINISH_TILE = new AnimatedImage(16, 16, new SprFinish(0, 0));
+			this.SPR_AMMO = new AnimatedImage(16, 16, new SprAmmo(0, 0));
+			this.SPR_MONEYBAG = new AnimatedImage(16, 16, new SprMoneybag(0, 0));
+			this.SPR_KEY = new AnimatedImage(16, 16, new SprKey(0, 0));
+			this.SPR_BREAK_BLOCK = new AnimatedImage(16, 16, new SprBreakBlock(0, 0));
+			this.SPR_LOCK = new AnimatedImage(16, 16, new SprLock(0, 0));
+			this.SPR_GOLD_TILE = new AnimatedImage(16, 16, new SprGoldTile(0, 0));
+			this.SPR_MINUS_CASH = new AnimatedImage(16, 16, new SprMinusCash(0, 0));
+			this.SPR_RELOAD_TILE = new AnimatedImage(16, 16, new SprReload(0, 0));
+			this.SPR_MONEY_BLOCK = new AnimatedImage(16, 16, new SprMoneyBlock(0, 0));
+			this.SPR_FLIP_TILE = new AnimatedImage(16, 16, new SprFlipTile(0, 0));
+			this.SPR_FLIP_TILE2 = new AnimatedImage(16, 16, new SprFlipTile2(0, 0));
+			this.SPR_PLAYER = new AnimatedImage(16, 16, new SprPlayer(0, 0));
 		}
 		//Integers:
 		this.NUM_LEVELS = 20;

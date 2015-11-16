@@ -32,8 +32,8 @@ import blynkdev.FrameTimer;
 	public var fired:Bool;				//If the player has fired
 	public var iTimer:FrameTimer;		//Times how long the player is invincible
 	public var bullets:Array<Bullet>;	//Bullets the player has fired
-	
-	
+
+
 	public function new(x:Int, y:Int, img:AnimatedImage):Void
 	{
 		super(x, y, img);
@@ -48,7 +48,7 @@ import blynkdev.FrameTimer;
 		this.fired = false;
 		this.score = 0;
 	}
-	
+
 	override public function delete():Void
 	{
 		super.delete();
@@ -59,7 +59,7 @@ import blynkdev.FrameTimer;
 			i.delete();
 		}
 	}
-	
+
 	//Execute this once every frame:
 	//1. execute the superclass' step event
 	//2. check if the player picked up a key
@@ -76,14 +76,14 @@ import blynkdev.FrameTimer;
 		var LEFT = KeyboardController.getKeyCode(KeyName.LEFT_ARROW);
 		var RIGHT = KeyboardController.getKeyCode(KeyName.RIGHT_ARROW);
 		var SPACE = KeyboardController.getKeyCode(KeyName.SPACE);
-		
+
 		super.frameEvent();
-		
+
 		if (this.key)
 			kText = "	Key: Yes";
 		else
 			kText = "	Key: No";
-			
+
 		if (!this.flip)
 		{
 			this.moveLeft(this.keys.isDown(LEFT));
@@ -94,27 +94,27 @@ import blynkdev.FrameTimer;
 			this.moveRight(this.keys.isDown(LEFT));
 			this.moveLeft(this.keys.isDown(RIGHT));
 		}
-		
+
 		for (i in 0...this.bullets.length)
 		{
 			if (this.bullets[i] != null)
 				this.bullets[i].frameEvent();
 		}
-		
+
 		this.fire(this.keys.isDown(SPACE));
-		
+
 		this.stats.outputText("Ammo:" + this.ammo + kText + "	Score:" + this.score);
-		
+
 		this.bringToFront();
 		this.stats.bringToFront();
-		
+
 		this.iTimer.frameEvent();
 		if (this.iTimer.time == 0)
 			this.invincible = false;
-			
+
 		this.adjustFrame();
 	}
-	
+
 	//Move to the left if the specified key is pressed
 	public function moveLeft(keyIsPressed:Bool):Void
 	{
@@ -125,7 +125,7 @@ import blynkdev.FrameTimer;
 			x -= 8;
 		}
 	}
-	
+
 	//Move to the right if the specified key is pressed
 	public function moveRight(keyIsPressed:Bool):Void
 	{
@@ -136,7 +136,7 @@ import blynkdev.FrameTimer;
 			x += 8;
 		}
 	}
-	
+
 	//Update the player's image's current frame
 	public function adjustFrame():Void
 	{
@@ -145,12 +145,12 @@ import blynkdev.FrameTimer;
 		else
 			this.img.currentFrame = 0;
 	}
-	
+
 	//Fire the player's gun
 	public function fire(keyIsPressed:Bool):Void
 	{
-		var b = new AnimatedImage(8, 8, new SprBullet());	//Bullet image
-		
+		var b = new AnimatedImage(8, 8, new SprBullet(0, 0));	//Bullet image
+
 		if (keyIsPressed)
 		{
 			if (this.ammo > 0)

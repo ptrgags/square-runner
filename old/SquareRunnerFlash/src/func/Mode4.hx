@@ -13,7 +13,7 @@ import Graphics;
  * @author Peter Gagliardi
  */
 
-class Mode4 
+class Mode4
 {
 	//{=M4==Credits=======================
 	//vars[0]	background	Bitmap
@@ -24,39 +24,39 @@ class Mode4
 	{
 		var vars = ctrl.vars;
 		var const = new Const();
-		
+
 		//Create Background
-		vars[0] = new Bitmap(new BacMain());
+		vars[0] = new Bitmap(new BacMain(0, 0));
 		Lib.current.addChild(vars[0]);
-		
+
 		vars[1] = new OutputBox();
 		vars[1].setDimensions(0,0,640,960);
 		vars[1].setColors(0xFFFFFF, null);
 		vars[1].setTextAlign(TextFormatAlign.CENTER);
 		vars[1].outputText(const.STR_CREDITS);
-		
+
 		vars[2] = new Button(0, 0, const.SPR_BUTTON.copyOf(), "Back");
 		vars[2].label.textColor = 0xFFFFFF;
 	}
-	
+
 	public static function frame(ctrl:Controller)
 	{
 		var vars = ctrl.vars;
-		
+
 		vars[1].y -= 2;
 		if (vars[1].y == -640)
 			vars[1].y = 640;
-			
+
 		vars[2].frameEvent();
-		
-		
+
+
 		/*this.text.y -= 1;
 			if (this.text.y == -640)
 				this.text.y = 320;
-				
+
 			for (i in this.grid.getAll())
 				i.stepEvent();
-			
+
 			if (this.grid.getObject(0,1).mode == 0)
 			{
 				this.sound = true;
@@ -69,7 +69,7 @@ class Mode4
 			}
 			*/
 	}
-	
+
 	public static function change(ctrl:Controller)
 	{
 		if (ctrl.vars[2].iSClicked())
@@ -84,7 +84,7 @@ class Mode4
 		return -1;
 		*/
 	}
-	
+
 	public static function end(ctrl:Controller)
 	{
 		ctrl.vars[0].delete();

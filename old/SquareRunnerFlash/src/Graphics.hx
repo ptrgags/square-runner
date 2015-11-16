@@ -8,38 +8,68 @@ package ;
 import flash.display.BitmapData;
 
 //Sprites
-//class SprButton extends BitmapData { public function new() { super(0, 0); } }
-class SprPlayer extends BitmapData { public function new() { super(0, 0); } }
-//class SprLevelButton extends BitmapData { public function new() { super(0, 0); } }
-class SprBlock extends BitmapData { public function new() { super(0, 0); } }
-class SprMovingBlock extends BitmapData { public function new() { super(0, 0); } }
-class SprFinish extends BitmapData { public function new() { super(0, 0); } }
-class SprAmmo extends BitmapData { public function new() { super(0, 0); } }
-class SprSlow extends BitmapData { public function new() { super(0, 0); } }
-class SprInvincible extends BitmapData { public function new() { super(0, 0); } }
-class SprMovingBlock2 extends BitmapData { public function new() { super(0, 0); } }
-class SprReload extends BitmapData { public function new() { super(0, 0); } }
-class SprMoneybag extends BitmapData { public function new() { super(0, 0); } }
-class SprBullet extends BitmapData { public function new() { super(0, 0); } }
-class SprGoldTile extends BitmapData { public function new() { super(0, 0); } }
-class SprMinusCash extends BitmapData { public function new() { super(0, 0); } }
-class SprFlipTile extends BitmapData { public function new() { super(0, 0); } }
-class SprFlipTile2 extends BitmapData { public function new() { super(0, 0); } }
-class SprKey extends BitmapData { public function new() { super(0, 0); } }
-class SprLock extends BitmapData { public function new() { super(0, 0); } }
-class SprMoneyBlock extends BitmapData { public function new() { super(0, 0); } }
-class SprBreakBlock extends BitmapData { public function new() { super(0, 0); } }
-class SprSoundToggle extends BitmapData { public function new() { super(0, 0); } }
+//class SprButton extends BitmapData {  }
+@:bitmap("spr/Player.png")
+class SprPlayer extends BitmapData {  }
+//class SprLevelButton extends BitmapData {  }
+@:bitmap("spr/Block.png")
+class SprBlock extends BitmapData {  }
+@:bitmap("spr/MovingBlock.png")
+class SprMovingBlock extends BitmapData {  }
+@:bitmap("spr/Finish.png")
+class SprFinish extends BitmapData {  }
+@:bitmap("spr/Ammo.png")
+class SprAmmo extends BitmapData {  }
+@:bitmap("spr/Slow.png")
+class SprSlow extends BitmapData {  }
+@:bitmap("spr/Invincible.png")
+class SprInvincible extends BitmapData {  }
+@:bitmap("spr/MovingBlock2.png")
+class SprMovingBlock2 extends BitmapData {  }
+@:bitmap("spr/Reload.png")
+class SprReload extends BitmapData {  }
+@:bitmap("spr/Moneybag.png")
+class SprMoneybag extends BitmapData {  }
+@:bitmap("spr/Bullet.png")
+class SprBullet extends BitmapData {  }
+@:bitmap("spr/GoldTile.png")
+class SprGoldTile extends BitmapData {  }
+@:bitmap("spr/MinusCashTile.png")
+class SprMinusCash extends BitmapData {  }
+@:bitmap("spr/FlipTile.png")
+class SprFlipTile extends BitmapData {  }
+@:bitmap("spr/FlipTile2.png")
+class SprFlipTile2 extends BitmapData {  }
+@:bitmap("spr/Key.png")
+class SprKey extends BitmapData {  }
+@:bitmap("spr/Lock.png")
+class SprLock extends BitmapData {  }
+@:bitmap("spr/MoneyBlock.png")
+class SprMoneyBlock extends BitmapData {  }
+@:bitmap("spr/BreakBlock.png")
+class SprBreakBlock extends BitmapData {  }
+@:bitmap("spr/Sound Toggle.png")
+class SprSoundToggle extends BitmapData {  }
 //Final:
-class SprButton extends BitmapData { public function new() { super(0, 0); } }
-class SprTitle extends BitmapData { public function new() { super(0, 0); } }
-class SprLevelButton extends BitmapData { public function new() { super(0, 0); } }
-class SprUpButton extends BitmapData { public function new() { super(0, 0); } }
-class SprDownButton extends BitmapData { public function new() { super(0, 0); } }
+@:bitmap("spr/Spr_Button.png")
+class SprButton extends BitmapData {  }
+@:bitmap("spr/Spr_Title.png")
+class SprTitle extends BitmapData {  }
+@:bitmap("spr/Spr_LevelButton.png")
+class SprLevelButton extends BitmapData {  }
+@:bitmap("spr/Spr_UpButton.png")
+class SprUpButton extends BitmapData {  }
+@:bitmap("spr/Spr_DownButton.png")
+class SprDownButton extends BitmapData {  }
 //Backgrounds
-class BacMainMenu extends BitmapData { public function new() { super(0, 0); } }
-class BacLvlSelect extends BitmapData { public function new() { super (0, 0); } }
-class BacInfo extends BitmapData { public function new() { super(0, 0); } }
-class BacLevel extends BitmapData { public function new() { super(0, 0); } }
+@:bitmap("bac/Bac_Main_Menu.png")
+class BacMainMenu extends BitmapData {  }
+@:bitmap("bac/Level Select Background.png")
+class BacLvlSelect extends BitmapData { }
+@:bitmap("bac/Info Background.png")
+class BacInfo extends BitmapData {  }
+@:bitmap("bac/Bac_Level.png")
+class BacLevel extends BitmapData {  }
 //Final:
-class BacMain extends BitmapData { public function new() { super(0, 0); } }
+@:bitmap("bac/Bac_Main_Menu.png")
+class BacMain extends BitmapData { }
