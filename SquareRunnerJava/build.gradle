@@ -1,10 +1,5 @@
 apply plugin: 'java'
 
-tasks.withType(JavaCompile) {
-  options.fork = true
-  options.forkOptions.executable = "C:\\Program Files\\Java\\jdk1.7.0_79\\bin\\javac.exe"
-}
-
 jar {
     manifest {
         attributes("Main-Class": "gags.sample.squarerunner.SquareRunner")
