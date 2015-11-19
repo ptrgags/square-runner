@@ -1,9 +1,0 @@
-#Ignore generated files
-*.class
-bin/
-
-#Ignore Haxe files since we already have them in the repo
-SquareRunner/haxe
-
-#Ignore old .uxf files since I don't have a way to open them
-*.uxf
